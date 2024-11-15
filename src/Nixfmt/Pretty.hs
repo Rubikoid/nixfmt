@@ -131,7 +131,7 @@ instance Pretty Binder where
         <> nest (sepBy sep ids <> nosep <> pretty semicolon)
     where
       -- Only allow a single line if it's already on a single line and has few enough elements
-      (sep, nosep) = if sourceLine inherit == sourceLine semicolon && length ids < 4 then (line, line') else (hardline, hardline)
+      (sep, nosep) = if sourceLine inherit == sourceLine semicolon && length ids < 8 then (line, line') else (hardline, hardline)
   -- `inherit (foo) bar` statement
   pretty (Inherit inherit (Just source) ids semicolon) =
     group $
@@ -145,7 +145,7 @@ instance Pretty Binder where
           )
     where
       -- Only allow a single line if it's already on a single line and has few enough elements
-      (sep, nosep) = if sourceLine inherit == sourceLine semicolon && length ids < 4 then (line, line') else (hardline, hardline)
+      (sep, nosep) = if sourceLine inherit == sourceLine semicolon && length ids < 8 then (line, line') else (hardline, hardline)
   -- `foo = bar`
   pretty (Assignment selectors assign expr semicolon) =
     group $
@@ -347,6 +347,10 @@ instance Pretty Parameter where
             [ParamAttr _ Nothing _, ParamEllipsis _] -> line
             [ParamAttr _ Nothing _, ParamAttr _ Nothing _] -> line
             [ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamEllipsis _] -> line
+            [ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _] -> line
+            [ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamEllipsis _] -> line
+            [ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _] -> line
+            [ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamAttr _ Nothing _, ParamEllipsis _] -> line
             _ -> hardline
   pretty (ContextParameter param1 at param2) =
     pretty param1 <> pretty at <> pretty param2
